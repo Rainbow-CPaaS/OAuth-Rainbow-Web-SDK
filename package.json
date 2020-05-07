@@ -1,0 +1,25 @@
+{
+    "name": "OAuth-SDK",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "cp ./node_modules/rainbow-web-sdk/src/* ./src",
+        "serve": "node server.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "express": "^4.17.1",
+        "express-session": "^1.17.1",
+        "passport": "^0.4.1",
+        "passport-http-bearer": "^1.0.1",
+        "passport-oauth2": "^1.5.0",
+        "rainbow-web-sdk": "^1.70.0",
+        "shortid": "^2.2.15",
+        "simple-oauth2": "^3.4.0"
+    }
+}
