@@ -3,3 +3,4 @@ AuthKeys*
 /node_modules
 /build
 /public
+/src/*min*
