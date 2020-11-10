@@ -13,7 +13,7 @@ npm i
 ```
 Once the libraries are installed in your folder directory, run:
 ```bash
-npm build
+npm run build
 ```
 Update `applicationID` and `applicationSecret` variables in `./server.js` and `applicationID` variable in `./src/index.js`. Then, finally, run:
 
