@@ -18,7 +18,7 @@ npm run build
 Update `applicationID` and `applicationSecret` variables in `./server.js` and `applicationID` variable in `./src/index.js`. Then, finally, run:
 
 ```bash
-npm serve
+npm run serve
 ```
 
 Then open your browser and go to `http://localhost:3001/`
@@ -32,5 +32,7 @@ To set a `redirect_uri` attribute and assign it to your application, use `rainbo
 ```shell
 rbw application set-redirecturi YOURAPPID YOURREDIRECTURI
 ```
+
+By default, the `redirect_uri` variable is set to `http://localhost:3001/oauth/callback`. Should you want to change it in your application, do not forget to modify the string in `server.js` file.
 
 For more information on the application lifecycle, you can read the tutorial [Application lifecycle](/#/documentation/doc/hub/application-lifecycle).
