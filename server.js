@@ -8,16 +8,19 @@ const LOG_ID = "[OAUTH_TEST_CLIENT]";
 const PORT = 3001;
 
 /* UPDATE THE CREDENTIALS BEFORE RUNNING THE PROGRAM */
-const applicationID = "YOUR_APP_ID";
-const applicationSecret = "YOUR_APP_SECRET";
+const applicationID = "";
+const applicationSecret = "";
 
 /* Choose one of the hosts */
 const RAINBOW_HOST = "https://sandbox.openrainbow.com";
+// const RAINBOW_HOST = "https://openrainbow.net";
 // const RAINBOW_HOST = "https://openrainbow.com";
 
 const app = express();
 
+let fullToken = null;
 let token = null;
+let refreshToken = null;
 let staticPath = path.join(__dirname, "/src");
 
 app.use(
@@ -55,6 +58,8 @@ app.get("/login", function (req, res) {
         state: shortid.generate()
     });
 
+    console.log(authorizationUri);
+
     // Redirect to Authorization server authorize endpoint
     res.redirect(authorizationUri);
 });
@@ -80,9 +85,12 @@ app.get("/oauth/callback", function (req, res) {
         return oauth2.authorizationCode
             .getToken(tokenOptions)
             .then((result) => {
-                let fullToken = oauth2.accessToken.create(result);
+                fullToken = oauth2.accessToken.create(result);
                 token = fullToken.token.access_token;
+                refreshToken = fullToken.token.refresh_token;
+
                 console.log(`${LOG_ID} Access Token retrieved: ${token}`);
+                console.log(`${LOG_ID} Access Token retrieved: ${refreshToken}`);
             })
             .then(() => {
                 /* Redirect to the main page */
@@ -91,6 +99,21 @@ app.get("/oauth/callback", function (req, res) {
             .catch((err) => {
                 console.log(`${LOG_ID} Access Token Error: ${err}`);
             });
+    }
+});
+
+app.get("/refreshToken", async (req, res) => {
+    try {
+        const refreshParams = {
+            scope: "all"
+        };
+        fullToken = await fullToken.refresh(refreshParams);
+        token = fullToken.token.access_token;
+        refreshToken = fullToken.token.refresh_token;
+        console.log(`\n\n\n${LOG_ID} GOT REFRESHED ACCESS TOKEN`, token);
+        res.send(token);
+    } catch (err) {
+        throw new Error(err);
     }
 });
 
@@ -112,4 +135,4 @@ app.get("/token", (req, res) => {
 });
 
 app.listen(PORT);
-console.info(`${LOG_ID} app started on port ${PORT}`);
+console.info(`${LOG_ID} app started on port ${PORT} (http://localhost:${PORT})`);

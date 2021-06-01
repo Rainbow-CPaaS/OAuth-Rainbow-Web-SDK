@@ -1,11 +1,15 @@
 import rainbowSDK from "./rainbow-sdk.min.js";
-const applicationID = "YOUR_APP_ID";
+const applicationID = "";
 
 window.addEventListener("DOMContentLoaded", (event) => {
     let token = null;
 
     console.log("*** OAUTH with RAINBOW WEB SDK ***");
     window.rainbowSDK = rainbowSDK;
+
+    document.addEventListener(rainbowSDK.callsLog.RAINBOW_ONCALLLOGUPDATED, () => {
+        rainbowSDK.callsLog.getAll().then((res) => console.log("EARLY CALLLOG DONE", res[0]));
+    });
 
     /* Try to fetch the token */
     if (!token) {
@@ -30,7 +34,11 @@ window.addEventListener("DOMContentLoaded", (event) => {
                 token = data;
                 if (token) {
                     loginLink.innerHTML = "";
-                    loginLink.href = "/";
+
+                    let refreshButton = document.createElement("button");
+                    refreshButton.innerHTML = "REFRESH TOKEN";
+                    refreshButton.onclick = window.refreshToken;
+                    container.appendChild(refreshButton);
 
                     let userCard = document.createElement("div");
                     userCard.id = "userData";
@@ -38,12 +46,21 @@ window.addEventListener("DOMContentLoaded", (event) => {
                     container.appendChild(userCard);
                     /* If token is present, start and load the SDK */
                     rainbowSDK.start();
-                    rainbowSDK.load();
+                    rainbowSDK.load({ verboseLog: false });
                 }
             })
             .catch((err) => console.log(err));
     }
-
+    window.refreshToken = async () => {
+        console.log("REFRESH TOKEN");
+        let res = await fetch("/refreshToken");
+        if (!res.ok) {
+            return res;
+        }
+        let newToken = await res.text();
+        console.log("TOKEN REFRESHED", newToken);
+        rainbowSDK.connection.setRenewedToken(newToken);
+    };
     let onLoaded = function onLoaded() {
         console.log("*** SDK LOADED ***");
 
